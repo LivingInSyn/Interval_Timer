@@ -82,10 +82,23 @@ class Application(Frame):
 		self.running_font = ('Times',24,'bold')
 		self.running_label = Label(self,text="Your intervals are running",font=self.running_font)
 		self.running_label.grid(row=0,column=0,columnspan=2)
+
+		#add the pause, back and quit buttons
+		self.back_button_run = Button(self,text="Back")
+		#self.back_button_run["command"]=self.back_run
+		self.back_button_run.grid(row=2,column=0,sticky=W)
+		self.pause_button = Button(self,text="Pause")
+		self.pause_button["command"]=self.pause
+		self.pause_button.grid(row=3,column=0,sticky=W)
+		self.quit = Button(self,text="Quit")
+		self.quit["command"]=self.exit
+		self.quit.grid(row=4,column=0,sticky=W)
 		#run the intervals
 		self.run_ints()
 
 	def run_ints(self):
+		self.run_status = True
+		self.exit_status = False	
 		i=0
 		for x in self.times:
 			x = float(x)			
@@ -98,21 +111,46 @@ class Application(Frame):
 			self.current_int_label = Label(self,text=self.names[i],font=self.int_label_font)
 			self.current_int_label.grid(row=1,column=0)
 			root.update()
-			os.system("say "+"'"+self.names[i]+"'"+" 2>/dev/null")
+			os.system("espeak "+"'"+self.names[i]+"'"+" 2>/dev/null")			
 			while a > 0:
-				time.sleep(1)
-				#print(a)
-				self.current_time_label = Label(self,text=str(a),font=self.time_label_font)
-				self.current_time_label.grid(row=1,column=1)
-				a = a-1
-				root.update()
+				if self.run_status==True:				
+					time.sleep(1)
+					#print(a)
+					self.current_time_label = Label(self,text=str(a),font=self.time_label_font)
+					self.current_time_label.grid(row=1,column=1)
+					a = a-1
+					root.update()
+				else:
+					time.sleep(.1)
+					root.update()
+				if self.exit_status == True:
+					break
+				else:
+					pass
+			if self.exit_status == True:
+				break
+			else:
+				pass
 			i+=1
-		os.system("say 'Workout Done' 2>/dev/null")
+		self.current_time_label["text"] = " "
+		self.current_int_label["text"] = " "
+		os.system("espeak 'Workout Done' 2>/dev/null")
 		self.running_label["text"] = "Workout Done!"
 		root.update()
 
 	def exit(self):
+		print("exit clicked")
+		self.exit_status = True
+		root.update()		
 		sys.exit(0)
+
+	def pause(self):
+		print("pause clicked")		
+		if self.run_status == True:
+			self.run_status = False
+		else:
+			self.run_status = True
+		
 
 		
 
