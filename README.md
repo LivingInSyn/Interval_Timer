@@ -1,4 +1,8 @@
 Interval_Timer
 ==============
 
-An indoor cycling interval timer
+A workout interval timer written in python with a TKinter GUI. 
+
+
+-To Do:
+Add CSV/load support
